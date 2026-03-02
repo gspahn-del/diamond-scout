@@ -135,7 +135,8 @@ export function AtBatTracker({ gameId, initialLineup, myScore, opponentScore }: 
         store.setStep('pitch_location');
       }
     } catch (err) {
-      setMessage('Error saving pitch. Please try again.');
+      console.error('Pitch save error:', err);
+      setMessage('Error: ' + (err instanceof Error ? err.message : String(err)));
     } finally {
       setSaving(false);
     }
