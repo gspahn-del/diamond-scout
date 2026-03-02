@@ -160,7 +160,7 @@ export function AtBatTracker({ gameId, initialLineup, myScore, opponentScore }: 
         fieldLocation: data.fieldLocation,
         sprayX: data.sprayX,
         sprayY: data.sprayY,
-        outByPositions: data.outByPositions,
+        outByPositions: data.outByPositions.length > 0 ? JSON.stringify(data.outByPositions) : undefined,
         rbiCount: data.rbiCount,
       });
 
