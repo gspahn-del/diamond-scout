@@ -76,7 +76,7 @@ export function AtBatTracker({ gameId, initialLineup, myScore, opponentScore }: 
       gameId,
       playerId: currentBatter.playerId,
       inning: store.currentInning,
-      paNumber: Date.now(), // unique PA number
+      paNumber: Date.now() % 2000000000, // unique PA number (fits in PostgreSQL INTEGER)
     });
     store.setCurrentPAId(pa.id);
     store.addUndo({ type: 'plate_appearance', plateAppearanceId: pa.id });
