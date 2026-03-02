@@ -1,0 +1,99 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: #0f172a;
+  --color-foreground: #f8fafc;
+  --color-card: #1e293b;
+  --color-card-foreground: #f8fafc;
+  --color-border: #334155;
+  --color-input: #334155;
+  --color-primary: #3b82f6;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #1e293b;
+  --color-secondary-foreground: #94a3b8;
+  --color-muted: #334155;
+  --color-muted-foreground: #94a3b8;
+  --color-accent: #1e293b;
+  --color-accent-foreground: #f8fafc;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
+  --color-ring: #3b82f6;
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Code', 'Fira Code', Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background-color: #0f172a;
+  color: #f8fafc;
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  -webkit-tap-highlight-color: transparent;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+.spray-dot {
+  transition: opacity 0.15s ease;
+}
+.spray-dot:hover {
+  cursor: pointer;
+}
+
+/* ── Print styles ──────────────────────────────────────────── */
+.print-only {
+  display: none;
+}
+
+@media print {
+  /* Force light theme */
+  html { color-scheme: light; }
+  *, *::before, *::after {
+    background: white !important;
+    color: black !important;
+    border-color: #ccc !important;
+    box-shadow: none !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Hide chrome */
+  header, nav, .no-print { display: none !important; }
+  main { padding-bottom: 0 !important; }
+
+  /* Show print-only sections */
+  .print-only { display: block !important; }
+
+  /* Scrollable tables: show full width */
+  .overflow-x-auto { overflow: visible !important; }
+
+  /* Avoid splitting cards across pages */
+  .bg-slate-800 { break-inside: avoid; page-break-inside: avoid; }
+
+  /* SVG charts: dark strokes/text on white */
+  svg text { fill: #111 !important; }
+  svg circle { opacity: 0.8 !important; }
+  svg line, svg path { stroke: #444 !important; }
+  svg rect { fill: white !important; }
+}

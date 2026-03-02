@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1772401558785,
+      "tag": "0000_mute_ezekiel_stane",
+      "breakpoints": true
+    }
+  ]
+}

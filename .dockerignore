@@ -1,0 +1,8 @@
+node_modules
+.next
+diamond-scout.db
+diamond-scout.db-shm
+diamond-scout.db-wal
+.DS_Store
+*.log
+npm-debug.log*
