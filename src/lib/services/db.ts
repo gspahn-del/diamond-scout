@@ -107,7 +107,7 @@ export async function getOpponentPlayers(teamId: number): Promise<OpponentPlayer
 
 export async function getPlayer(id: number): Promise<OpponentPlayer | undefined> {
   try {
-    return await apiCall<OpponentPlayer>('GET', `/api/opponents/0/players/${id}`);
+    return await apiCall<OpponentPlayer>('GET', `/api/players/${id}`);
   } catch {
     return undefined;
   }
@@ -118,11 +118,11 @@ export async function createPlayer(teamId: number, data: Pick<OpponentPlayer, 'f
 }
 
 export async function updatePlayer(id: number, data: Partial<OpponentPlayer>): Promise<void> {
-  await apiCall('PUT', `/api/opponents/0/players/${id}`, data);
+  await apiCall('PUT', `/api/players/${id}`, data);
 }
 
 export async function deletePlayer(id: number): Promise<void> {
-  await apiCall('DELETE', `/api/opponents/0/players/${id}`);
+  await apiCall('DELETE', `/api/players/${id}`);
 }
 
 // ─── Games ────────────────────────────────────────────────────────────────────
@@ -185,8 +185,7 @@ export async function updatePA(id: number, data: Partial<PlateAppearance>): Prom
 }
 
 export async function deletePA(id: number): Promise<void> {
-  // Find the game ID first
-  throw new Error('deletePA requires gameId which is not provided');
+  await apiCall('DELETE', `/api/plate-appearances/${id}`);
 }
 
 export async function createPitch(data: Pick<Pitch, 'sequenceNumber' | 'pitchType' | 'pitchResult'> & Partial<Pick<Pitch, 'plateAppearanceId' | 'gameId' | 'pitcherId' | 'batterId' | 'locationX' | 'locationY' | 'velocity'>>): Promise<Pitch> {
@@ -195,7 +194,7 @@ export async function createPitch(data: Pick<Pitch, 'sequenceNumber' | 'pitchTyp
 }
 
 export async function deletePitch(id: number): Promise<void> {
-  throw new Error('deletePitch requires gameId which is not provided');
+  await apiCall('DELETE', `/api/pitches/${id}`);
 }
 
 export async function createBattedBall(data: Pick<BattedBall, 'hitType' | 'hitResult' | 'fieldLocation'> & Partial<Pick<BattedBall, 'plateAppearanceId' | 'gameId' | 'batterId' | 'sprayX' | 'sprayY' | 'exitAngle' | 'outByPositions' | 'rbiCount'>>): Promise<BattedBall> {
@@ -204,7 +203,7 @@ export async function createBattedBall(data: Pick<BattedBall, 'hitType' | 'hitRe
 }
 
 export async function deleteBattedBall(id: number): Promise<void> {
-  throw new Error('deleteBattedBall requires gameId which is not provided');
+  await apiCall('DELETE', `/api/batted-balls/${id}`);
 }
 
 // ─── Analytics ────────────────────────────────────────────────────────────────
@@ -234,7 +233,7 @@ export async function getPlayerTendencies(playerId: number): Promise<Tendencies 
 }
 
 export async function getPlayerPAs(playerId: number): Promise<PlateAppearanceWithPitches[]> {
-  throw new Error('getPlayerPAs requires custom endpoint - implement if needed');
+  return apiCall<PlateAppearanceWithPitches[]>('GET', `/api/players/${playerId}/plate-appearances`);
 }
 
 export async function getTeamSprayData(teamId: number): Promise<SprayDot[]> {
