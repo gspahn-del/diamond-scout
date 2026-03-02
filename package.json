@@ -30,6 +30,7 @@
     "dexie": "^4.3.0",
     "drizzle-kit": "^0.31.9",
     "drizzle-orm": "^0.45.1",
+    "jspdf": "^2.5.2",
     "lucide-react": "^0.575.0",
     "next": "16.1.6",
     "pg": "^8.13.3",

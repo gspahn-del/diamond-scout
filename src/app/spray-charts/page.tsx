@@ -5,6 +5,7 @@ import type { OpponentTeam, OpponentPlayer, SprayDot } from '@/types';
 import { SprayChart } from '@/components/field/SprayChart';
 import { FieldZoneTable } from '@/components/field/FieldZoneTable';
 import * as svc from '@/lib/services/db';
+import { exportSprayChartPNG, exportSprayChartPDF } from '@/lib/export/chartExport';
 
 export default function SprayChartsPage() {
   const [teams, setTeams] = useState<OpponentTeam[]>([]);
@@ -18,7 +19,7 @@ export default function SprayChartsPage() {
   const [player2Dots, setPlayer2Dots] = useState<SprayDot[]>([]);
   const [hitTypeFilter, setHitTypeFilter] = useState('all');
   const [hitResultFilter, setHitResultFilter] = useState('all');
-  const [loading, setLoading] = useState(false);
+  const [exporting, setExporting] = useState<string | null>(null);
 
   useEffect(() => {
     svc.getOpponents().then(setTeams);
@@ -53,12 +54,61 @@ export default function SprayChartsPage() {
     });
   }
 
-  const filteredTeamDots = filterDots(teamDots);
+  const filteredTeamDots   = filterDots(teamDots);
   const filteredPlayer1Dots = filterDots(player1Dots);
   const filteredPlayer2Dots = filterDots(player2Dots);
 
   const player1 = players.find((p) => String(p.id) === selectedPlayer1);
   const player2 = players.find((p) => String(p.id) === selectedPlayer2);
+  const selectedTeamObj = teams.find((t) => String(t.id) === selectedTeam);
+
+  async function handleExport(format: 'png' | 'pdf', dots: SprayDot[], title: string) {
+    const key = `${format}-${title}`;
+    setExporting(key);
+    try {
+      if (format === 'png') {
+        exportSprayChartPNG(dots, title);
+      } else {
+        await exportSprayChartPDF(dots, title);
+      }
+    } finally {
+      setExporting(null);
+    }
+  }
+
+  function ExportButtons({ dots, title }: { dots: SprayDot[]; title: string }) {
+    if (dots.length === 0) return null;
+    const isLoadingPng = exporting === `png-${title}`;
+    const isLoadingPdf = exporting === `pdf-${title}`;
+    return (
+      <div className="flex gap-2 mt-3">
+        <button
+          onClick={() => handleExport('png', dots, title)}
+          disabled={!!exporting}
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 disabled:opacity-50 text-slate-200 text-xs font-medium rounded-lg transition-colors"
+        >
+          {isLoadingPng ? (
+            <span className="inline-block w-3 h-3 border-2 border-slate-400 border-t-transparent rounded-full animate-spin" />
+          ) : (
+            <span>🖼</span>
+          )}
+          Export PNG
+        </button>
+        <button
+          onClick={() => handleExport('pdf', dots, title)}
+          disabled={!!exporting}
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 disabled:opacity-50 text-slate-200 text-xs font-medium rounded-lg transition-colors"
+        >
+          {isLoadingPdf ? (
+            <span className="inline-block w-3 h-3 border-2 border-slate-400 border-t-transparent rounded-full animate-spin" />
+          ) : (
+            <span>📄</span>
+          )}
+          Export PDF
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
@@ -161,6 +211,10 @@ export default function SprayChartsPage() {
               Team Spray Chart ({filteredTeamDots.length} batted balls)
             </h2>
             <SprayChart dots={filteredTeamDots} />
+            <ExportButtons
+              dots={filteredTeamDots}
+              title={`${selectedTeamObj?.name ?? 'Team'} – All Players`}
+            />
           </div>
           <div className="bg-slate-800 border border-slate-700 rounded-xl p-5">
             <h2 className="font-semibold text-white mb-3">Zone Breakdown</h2>
@@ -176,6 +230,10 @@ export default function SprayChartsPage() {
               {player1?.firstName} {player1?.lastName} ({filteredPlayer1Dots.length} BIP)
             </h2>
             <SprayChart dots={filteredPlayer1Dots} />
+            <ExportButtons
+              dots={filteredPlayer1Dots}
+              title={player1 ? `${player1.firstName} ${player1.lastName}` : 'Player'}
+            />
           </div>
           <div className="bg-slate-800 border border-slate-700 rounded-xl p-5">
             <h2 className="font-semibold text-white mb-3">Zone Breakdown</h2>
@@ -191,12 +249,20 @@ export default function SprayChartsPage() {
               {player1 ? `${player1.firstName} ${player1.lastName}` : 'Player 1'} ({filteredPlayer1Dots.length} BIP)
             </h2>
             <SprayChart dots={filteredPlayer1Dots} />
+            <ExportButtons
+              dots={filteredPlayer1Dots}
+              title={player1 ? `${player1.firstName} ${player1.lastName}` : 'Player 1'}
+            />
           </div>
           <div className="bg-slate-800 border border-slate-700 rounded-xl p-5">
             <h2 className="font-semibold text-white mb-3">
               {player2 ? `${player2.firstName} ${player2.lastName}` : 'Player 2'} ({filteredPlayer2Dots.length} BIP)
             </h2>
             <SprayChart dots={filteredPlayer2Dots} />
+            <ExportButtons
+              dots={filteredPlayer2Dots}
+              title={player2 ? `${player2.firstName} ${player2.lastName}` : 'Player 2'}
+            />
           </div>
         </div>
       )}
