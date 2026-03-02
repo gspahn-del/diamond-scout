@@ -36,7 +36,7 @@ export default function StatsPage() {
 
   useEffect(() => {
     svc.getStatsOverview().then((data) => {
-      setOverview(data);
+      setOverview(data as Overview);
       setLoading(false);
     });
   }, []);
