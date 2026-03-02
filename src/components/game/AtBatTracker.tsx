@@ -102,6 +102,7 @@ export function AtBatTracker({ gameId, initialLineup, myScore, opponentScore }: 
       const paId = await ensurePA();
 
       const savedPitch = await svc.createPitch({
+        gameId,
         plateAppearanceId: paId,
         batterId: currentBatter?.playerId,
         sequenceNumber: store.currentPitches.length + 1,
@@ -150,6 +151,7 @@ export function AtBatTracker({ gameId, initialLineup, myScore, opponentScore }: 
 
       // Save batted ball
       await svc.createBattedBall({
+        gameId,
         plateAppearanceId: paId,
         batterId: currentBatter?.playerId,
         hitType: data.hitType,
