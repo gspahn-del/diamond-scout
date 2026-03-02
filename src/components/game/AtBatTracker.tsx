@@ -160,7 +160,7 @@ export function AtBatTracker({ gameId, initialLineup, myScore, opponentScore }: 
         fieldLocation: data.fieldLocation,
         sprayX: data.sprayX,
         sprayY: data.sprayY,
-        outByPositions: data.outByPositions ? JSON.stringify(data.outByPositions) : null,
+        outByPositions: data.outByPositions,
         rbiCount: data.rbiCount,
       });
 
@@ -179,6 +179,9 @@ export function AtBatTracker({ gameId, initialLineup, myScore, opponentScore }: 
       const outCount = data.hitResult === 'double_play' ? 2 : isOut ? 1 : 0;
 
       await completePa(paResult, paId, isOut, outCount > 1);
+    } catch (err) {
+      console.error('Batted ball save error:', err);
+      setMessage('Error: ' + (err instanceof Error ? err.message : String(err)));
     } finally {
       setSaving(false);
     }
@@ -186,7 +189,7 @@ export function AtBatTracker({ gameId, initialLineup, myScore, opponentScore }: 
 
   async function completePa(result: string, paId: number, isOut: boolean, doublePlay = false) {
     // Update PA result
-    await svc.updatePA(paId, { result, pitchCount: store.currentPitches.length });
+    await svc.updatePA(paId, { gameId, result, pitchCount: store.currentPitches.length });
 
     store.clearPendingPitch();
 
