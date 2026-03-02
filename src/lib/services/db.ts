@@ -265,11 +265,11 @@ export async function exportGamesCSV(): Promise<string> {
 export async function exportAllData(): Promise<string> {
   // Fetch all data from endpoints
   const [seasons, myTeams, opponentTeams, opponentPlayers, games, gameLineups, plateAppearances, pitches, battedBalls] = await Promise.all([
-    apiCall('/api/seasons'),
-    apiCall('/api/my-teams'),
-    apiCall('/api/opponents'),
-    fetch('/api/opponents').then(r => r.json()), // Note: would need to aggregate from all teams
-    apiCall('/api/games'),
+    apiCall<unknown[]>('GET', '/api/seasons'),
+    apiCall<unknown[]>('GET', '/api/my-teams'),
+    apiCall<unknown[]>('GET', '/api/opponents'),
+    fetch('/api/opponents').then(r => r.json()).catch(() => []),
+    apiCall<unknown[]>('GET', '/api/games'),
     fetch('/api/games/0/lineup').then(r => r.json()).catch(() => []),
     fetch('/api/games/0/plate-appearances').then(r => r.json()).catch(() => []),
     fetch('/api/games/0/pitches').then(r => r.json()).catch(() => []),
